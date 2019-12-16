@@ -149,6 +149,9 @@ var AC = function init(inputEl, urlFn, requestFn, resultFn, rowFn, triggerFn,
    * autocomplete is unmounted.
    */
   self.clickHandler = self.click.bind(self);
+  // AZ (Viz) 7/19/2016: need separate tap handling otherwise list selection
+  // doesn't consistently work on mobile.
+  self.tapHandler = self.tap.bind(self);
 
   /**
    * @type {Function}
@@ -256,8 +259,13 @@ AC.prototype.mount = function mount() {
   _window.addEventListener('input',      self.inputHandler);
   _window.addEventListener('resize',     self.resizeHandler);
   if (AC.isMobileSafari()) {
-    _window.addEventListener('touchend', self.clickHandler);
+    // AZ (Viz) 7/19/2016
+    // VIZ explict handling of tap events, should only apply to the AC widget itself, not the whole page
+    self.el.addEventListener('touchstart', self.tapHandler);
+    self.el.addEventListener('touchmove',  self.tapHandler);
+    self.el.addEventListener('touchend',   self.tapHandler);
   } else {
+    // VIZ click event must stay for the whole window to detect clicks outside the widget (thus closing it)
     _window.addEventListener('click',    self.clickHandler);
   }
 
@@ -286,7 +294,10 @@ AC.prototype.unmount = function unmount() {
   _window.removeEventListener('input',      self.inputHandler);
   _window.removeEventListener('resize',     self.resizeHandler);
   if (AC.isMobileSafari()) {
-    _window.removeEventListener('touchend', self.clickHandler);
+    // AZ (Viz) 7/19/2016
+    self.el.removeEventListener('touchstart', self.tapHandler);
+    self.el.removeEventListener('touchmove',  self.tapHandler);
+    self.el.removeEventListener('touchend',   self.tapHandler);
   } else {
     _window.removeEventListener('click',    self.clickHandler);
   }
@@ -441,10 +452,29 @@ AC.prototype.click = function click(e) {
   }
 
   if (rowid > -1) {
+    e.preventDefault();  // NOTE: this may not be necessary
     self.selectedIndex = rowid;
     self.trigger(e);
   } else {
     self.unmount();
+  }
+};
+
+// Added by AZ (Viz) 7/19/2016.
+// @see http://stackoverflow.com/a/13358390
+AC.prototype.tap = function tap(e) {
+  var self = this;
+
+  self.el.setAttribute('data-'+e.type, 1);
+
+  if (e.type === 'touchend' && !self.el.getAttribute('data-touchmove')) {
+    e.type = 'tap';
+    self.click(e);
+
+  } else if (self.el.getAttribute('data-touchend')) {
+    self.el.removeAttribute('data-touchstart');
+    self.el.removeAttribute('data-touchmove');
+    self.el.removeAttribute('data-touchend');
   }
 };
 
