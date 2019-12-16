@@ -489,11 +489,19 @@ AC.prototype.trigger = function trigger(event) {
 
   self.value = self.results[self.selectedIndex][self.primaryTextKey];
   self.inputEl.value = self.value;
-  self.inputEl.blur();
+  //self.inputEl.blur();
   if (self.triggerFn) {
     self.triggerFn(self.results[self.selectedIndex], event);
   }
-  self.unmount();
+  // Updated by AZ (Viz) 7/19/2016:
+  // Don't unmount at this point, in case user keeps typing (e.g. backspace).
+  // Keep focus in the search field after a selection is made to enable further typing,
+  // but hide the results list first.
+  // (Need to focus synchronously otherwise doesn't work on mobile safari)
+  //this.unmount(); 
+  self.el.style.display = 'none';
+  self.selectedIndex    = -1;
+  self.inputEl.focus();
 };
 
 /**
@@ -583,6 +591,7 @@ AC.prototype.render = function render() {
   }
 
   self.el.appendChild(self.rowWrapperEl);
+  self.el.style.display = ''; // AZ (Viz) 7/19/2016 always show upon render
 };
 
 /**
