@@ -266,8 +266,7 @@ AC.prototype.mount = function mount() {
   self.render();
   self.isMounted = true;
 
-  if (Math.max(_document.documentElement.clientWidth,
-      _window.innerWidth || 0) < 500) {
+  if (Math.max(_document.documentElement.clientWidth, _window.innerWidth || 0) < 500) {
     setTimeout(function top() {
       self.inputEl.scrollIntoView();
     }, 1);
@@ -333,8 +332,7 @@ AC.prototype.keydown = function keydown(e) {
       break;
     case AC.KEYCODE.RIGHT:
       if (self.selectedIndex > -1) {
-        self.inputEl.value =
-            self.results[self.selectedIndex][self.primaryTextKey];
+        self.inputEl.value = self.results[self.selectedIndex][self.primaryTextKey];
         self.isRightArrowComplete = true;
       }
       break;
@@ -573,8 +571,7 @@ AC.prototype.createRow = function create(i) {
      ,primary = AC.createEl('span', self.getCSS('PRIMARY_SPAN'))
   ;
 
-  primary.appendChild(AC.createMatchTextEls(self.value,
-      data[self.primaryTextKey]));
+  primary.appendChild(AC.createMatchTextEls(self.value, data[self.primaryTextKey]));
   el.appendChild(primary);
 
   if (data[self.secondaryTextKey]) {
