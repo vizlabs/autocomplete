@@ -358,7 +358,9 @@ AC.prototype.keydown = function keydown(e) {
     case AC.KEYCODE.ENTER:
       if (self.selectedIndex > -1) {
         self.trigger(e);
-        e.preventDefault();  // Make sure search isn't automatically triggered after selection.
+        e.preventDefault();
+        // Make sure search isn't automatically triggered after selection.
+        // Current intention: user could auto-complete the series and then add more search terms (such as manga/dvds)
       }
       break;
     case AC.KEYCODE.ESC:
@@ -368,7 +370,7 @@ AC.prototype.keydown = function keydown(e) {
       // (Need to focus synchronously otherwise doesn't work on mobile safari)
       //this.inputEl.blur();
       //this.unmount();
-      var listStyle = window.getComputedStyle(self.el);
+      var listStyle = window.getComputedStyle(self.el);  // NOTE: getComputedStyle gets everything inherited as well
       if (self.results.length && listStyle.display !== 'none') {
         self.el.style.display = 'none';
         self.selectedIndex    = -1;
@@ -482,6 +484,7 @@ AC.prototype.click = function click(e) {
 
 // Added by AZ (Viz) 7/19/2016.
 // @see http://stackoverflow.com/a/13358390
+// NOTE: converted to NOT use jquery
 AC.prototype.tap = function tap(e) {
   var self = this;
 
