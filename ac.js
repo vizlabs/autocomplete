@@ -609,6 +609,10 @@ AC.prototype.render = function render() {
       self.rows.push(row);
     }
     self.rowWrapperEl.appendChild(fragment);
+
+    // MH Viz - Since right-arrow auto completes the first entry, and down-arrow moves to the second entry the first entry should be the currently selected/highlighted element
+    self.setSelectedIndex(0); // start with the first position if there were results
+
   } else {
     self.rowWrapperEl.style.display = 'none';
   }
