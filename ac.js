@@ -247,7 +247,6 @@ AC.prototype.mount = function mount() {
 
   if (!self.el) {
     self.el = AC.createEl('div', self.getCSS('WRAPPER'));
-    self.el.style.position = 'absolute';
     _document.body.appendChild(self.el);
   } else {
     self.el.style.display = '';
