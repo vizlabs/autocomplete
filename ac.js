@@ -349,11 +349,22 @@ AC.prototype.keydown = function keydown(e) {
     case AC.KEYCODE.ENTER:
       if (self.selectedIndex > -1) {
         self.trigger(e);
+        e.preventDefault();  // Make sure search isn't automatically triggered after selection.
       }
       break;
     case AC.KEYCODE.ESC:
-      self.inputEl.blur();
-      self.unmount();
+      // Updated by AZ (Viz) 7/19/2016:
+      // Don't unmount at this point, in case user keeps typing into the search field.
+      // Keep focus in the search field after escape, but hide the results list first.
+      // (Need to focus synchronously otherwise doesn't work on mobile safari)
+      //this.inputEl.blur();
+      //this.unmount();
+      var listStyle = window.getComputedStyle(self.el);
+      if (self.results.length && listStyle.display !== 'none') {
+        self.el.style.display = 'none';
+        self.selectedIndex    = -1;
+        e.preventDefault();
+      }
       break;
     default:
       break;
