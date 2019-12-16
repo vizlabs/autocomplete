@@ -1,9 +1,3 @@
-/* jslint browser: true, node: true */
-/* eslint-disable max-statements */
-/* global window, document, setTimeout, XMLHttpRequest */
-
-'use strict';
-
 /**
  * From: https://github.com/danqing/autocomplete/
  * Version: 0.5.1
@@ -715,4 +709,3 @@ AC.encodeQuery = function encode(obj) {
   return str.join('&');
 };
 
-module.exports = AC;
