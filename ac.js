@@ -248,35 +248,44 @@ AC.prototype.mount = function mount() {
     return;
   }
 
-  if (!self.el) {
-    self.el = AC.createEl('div', self.getCSS('WRAPPER'));
-    _document.body.appendChild(self.el);
-  } else {
-    self.el.style.display = '';
-  }
+  /* AZ (Viz) 7/18/2016: Make sure to scrollIntoView before positioning the search field,
+     otherwise creates a visible gap between the search field and results in the
+     sidebar menu on mobile safari. */
+  var doMount = function() {
+    // REM: self inherited from containing scope
+    if (!self.el) {
+      self.el = AC.createEl('div', self.getCSS('WRAPPER'));
+      _document.body.appendChild(self.el);
+    } else {
+      self.el.style.display = '';
+    }
 
-  _window.addEventListener('keydown',    self.keydownHandler);
-  _window.addEventListener('input',      self.inputHandler);
-  _window.addEventListener('resize',     self.resizeHandler);
-  if (AC.isMobileSafari()) {
-    // AZ (Viz) 7/19/2016
-    // VIZ explict handling of tap events, should only apply to the AC widget itself, not the whole page
-    self.el.addEventListener('touchstart', self.tapHandler);
-    self.el.addEventListener('touchmove',  self.tapHandler);
-    self.el.addEventListener('touchend',   self.tapHandler);
-  } else {
-    // VIZ click event must stay for the whole window to detect clicks outside the widget (thus closing it)
-    _window.addEventListener('click',    self.clickHandler);
-  }
+    _window.addEventListener('keydown',    self.keydownHandler);
+    _window.addEventListener('input',      self.inputHandler);
+    _window.addEventListener('resize',     self.resizeHandler);
+    if (AC.isMobileSafari()) {
+      // AZ (Viz) 7/19/2016
+      // VIZ explict handling of tap events, should only apply to the AC widget itself, not the whole page
+      self.el.addEventListener('touchstart', self.tapHandler);
+      self.el.addEventListener('touchmove',  self.tapHandler);
+      self.el.addEventListener('touchend',   self.tapHandler);
+    } else {
+      // VIZ click event must stay for the whole window to detect clicks outside the widget (thus closing it)
+      _window.addEventListener('click',    self.clickHandler);
+    }
 
-  self.position();
-  self.render();
-  self.isMounted = true;
+    self.position();
+    self.render();
+    self.isMounted = true;
+  };
 
   if (Math.max(_document.documentElement.clientWidth, _window.innerWidth || 0) < 500) {
     setTimeout(function top() {
       self.inputEl.scrollIntoView();
+      doMount();
     }, 1);
+  } else {
+    doMount();
   }
 };
 
