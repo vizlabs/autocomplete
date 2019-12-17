@@ -263,16 +263,16 @@ AC.prototype.mount = function mount() {
     _window.addEventListener('keydown',    self.keydownHandler);
     _window.addEventListener('input',      self.inputHandler);
     _window.addEventListener('resize',     self.resizeHandler);
-    if (AC.isMobileSafari()) {
+    //if (AC.isMobileSafari()) {
       // AZ (Viz) 7/19/2016
       // VIZ explict handling of tap events, should only apply to the AC widget itself, not the whole page
       self.el.addEventListener('touchstart', self.tapHandler);
       self.el.addEventListener('touchmove',  self.tapHandler);
       self.el.addEventListener('touchend',   self.tapHandler);
-    } else {
+    //} else {
       // VIZ click event must stay for the whole window to detect clicks outside the widget (thus closing it)
       _window.addEventListener('click',    self.clickHandler);
-    }
+    //}
 
     self.position();
     self.render();
@@ -302,14 +302,14 @@ AC.prototype.unmount = function unmount() {
   _window.removeEventListener('keydown',    self.keydownHandler);
   _window.removeEventListener('input',      self.inputHandler);
   _window.removeEventListener('resize',     self.resizeHandler);
-  if (AC.isMobileSafari()) {
+  //if (AC.isMobileSafari()) {
     // AZ (Viz) 7/19/2016
     self.el.removeEventListener('touchstart', self.tapHandler);
     self.el.removeEventListener('touchmove',  self.tapHandler);
     self.el.removeEventListener('touchend',   self.tapHandler);
-  } else {
+  //} else {
     _window.removeEventListener('click',    self.clickHandler);
-  }
+  //}
 
   self.el.style.display = 'none';
   self.inputEl.blur();
@@ -482,7 +482,7 @@ AC.prototype.click = function click(e) {
   }
 };
 
-// Added by AZ (Viz) 7/19/2016.
+// Added by AZ (Viz) 7/19/2016. (tapHandler)
 // @see http://stackoverflow.com/a/13358390
 // NOTE: converted to NOT use jquery
 AC.prototype.tap = function tap(e) {
