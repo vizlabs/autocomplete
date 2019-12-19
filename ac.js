@@ -592,6 +592,24 @@ AC.prototype.createRow = function create(i) {
 };
 
 /**
+ * Finds the portion of the data string that matches the input search field.
+ * This is a separate method so that it can be easily enhanced/replaced depending on specific application needs
+ *
+ * @param {string} input    the input field
+ * @param {string} complete the data row being matched against
+ * @return {array} [Start, End] indices of the match string
+ */
+AC.matcher = function (input, complete) {
+  var len, start, end;
+
+  len   = input.length;
+  start = len ? complete.toLowerCase().indexOf(input.toLowerCase()) : -1;
+  end   = start + len;
+
+  return [start, end];
+};
+
+/**
  * Creates DOM elements for autocomplete result input highlighting. With the
  * whitespaces in the input trimmed, the input will be in bold (b) whereas
  * everything else will be left intact (span).
@@ -603,16 +621,17 @@ AC.prototype.createRow = function create(i) {
  */
 AC.createMatchTextEls = function match(input, complete) {
   var fragment = document.createDocumentFragment()
-     ,len,start,end,tmp
+     ,start,end,tmp
   ;
   if (!complete) {
     return fragment;
   }
 
   input = input ? input.trim() : '';
-  len   = input.length;
-  start = len ? complete.toLowerCase().indexOf(input.toLowerCase()) : -1;
-  end   = start + len;
+
+  tmp   = AC.matcher(input, complete);
+  start = tmp[0];
+  end   = tmp[1];
 
   // Match not found
   if (start === -1) {
