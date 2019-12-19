@@ -603,7 +603,7 @@ AC.prototype.createRow = function create(i) {
  */
 AC.createMatchTextEls = function match(input, complete) {
   var fragment = document.createDocumentFragment()
-     ,len,index
+     ,len,start,end,tmp
   ;
   if (!complete) {
     return fragment;
@@ -611,21 +611,24 @@ AC.createMatchTextEls = function match(input, complete) {
 
   input = input ? input.trim() : '';
   len   = input.length;
-  index = len ? complete.toLowerCase().indexOf(input.toLowerCase()) : -1;
+  start = len ? complete.toLowerCase().indexOf(input.toLowerCase()) : -1;
+  end   = start + len;
 
-  if (index === -1) {
+  // Match not found
+  if (start === -1) {
     fragment.appendChild(AC.createEl('span', null, complete));
 
-  // Match found at the beginning
-  } else if (index == 0) {
-    fragment.appendChild(AC.createEl('b',    null, complete.slice(0, len)));
-    fragment.appendChild(AC.createEl('span', null, complete.slice(len)));
-
-  // Match found in the middle somewhere
+  // Match found
   } else {
-    fragment.appendChild(AC.createEl('span', null, complete.slice(0, index)));
-    fragment.appendChild(AC.createEl('b',    null, complete.slice(index, index + len)));
-    fragment.appendChild(AC.createEl('span', null, complete.slice(index + len)));
+    // NOTE: only prepend or append <span> tags when there is text leftover that is not part of the match string
+    if (tmp = complete.slice(0, start)) {
+      fragment.appendChild(AC.createEl('span', null, tmp));
+    }
+    fragment.appendChild(AC.createEl('b', null, complete.slice(start, end)));
+
+    if (tmp = complete.slice(end)) {
+      fragment.appendChild(AC.createEl('span', null, tmp));
+    }
   }
 
   return fragment;
