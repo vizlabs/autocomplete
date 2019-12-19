@@ -613,19 +613,19 @@ AC.createMatchTextEls = function match(input, complete) {
   len   = input.length;
   index = len ? complete.toLowerCase().indexOf(input.toLowerCase()) : -1;
 
-  if (index === 0) {
-    fragment.appendChild(AC.createEl('b', null, complete.substring(0, len)));
-    fragment.appendChild(AC.createEl('span', null,
-        complete.substring(len, complete.length)));
-  } else if (index > 0) {
-    fragment.appendChild(AC.createEl('span', null,
-        complete.substring(0, index)));
-    fragment.appendChild(AC.createEl('b', null,
-        complete.substring(index, index + len)));
-    fragment.appendChild(AC.createEl('span', null,
-        complete.substring(index + len, complete.length)));
-  } else {
+  if (index === -1) {
     fragment.appendChild(AC.createEl('span', null, complete));
+
+  // Match found at the beginning
+  } else if (index == 0) {
+    fragment.appendChild(AC.createEl('b',    null, complete.slice(0, len)));
+    fragment.appendChild(AC.createEl('span', null, complete.slice(len)));
+
+  // Match found in the middle somewhere
+  } else {
+    fragment.appendChild(AC.createEl('span', null, complete.slice(0, index)));
+    fragment.appendChild(AC.createEl('b',    null, complete.slice(index, index + len)));
+    fragment.appendChild(AC.createEl('span', null, complete.slice(index + len)));
   }
 
   return fragment;
